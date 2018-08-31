@@ -13,6 +13,7 @@ import DeletePostModal from 'components/delete_post_modal';
 import DelayedAction from 'utils/delayed_action.jsx';
 import * as PostUtils from 'utils/post_utils.jsx';
 import * as Utils from 'utils/utils.jsx';
+import * as UserStores from 'stores/user_store.jsx';
 
 import Pluggable from 'plugins/pluggable';
 
@@ -161,6 +162,7 @@ export default class DotMenu extends Component {
     }
 
     render() {
+        //console.log(PostUtils.getCurrentUserInfo());
         const isSystemMessage = PostUtils.isSystemMessage(this.props.post);
         const isMobile = Utils.isMobile();
         const canDelete = PostUtils.canDeletePost(this.props.post);

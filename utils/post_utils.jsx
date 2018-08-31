@@ -42,6 +42,10 @@ export function isEdited(post) {
     return post.edit_at > 0;
 }
 
+// export function getCurrentUserInfo() {
+//     return UserStore.getCurrentUser();
+// }
+
 export function getImageSrc(src, hasImageProxy) {
     if (hasImageProxy) {
         return Client4.getBaseRoute() + '/image?url=' + encodeURIComponent(src);
@@ -49,11 +53,31 @@ export function getImageSrc(src, hasImageProxy) {
     return src;
 }
 
+function hasSystemAdminPermission(user){
+    
+    var user_roles = user.roles;
+
+    //console.log(user_roles.includes(Constants.PERMISSIONS_SYSTEM_ADMIN))
+    if(user_roles.includes(Constants.PERMISSIONS_SYSTEM_ADMIN)){
+         return true;
+    }
+    return false;
+
+}
+
 export function canDeletePost(post) {
     if (post.type === Constants.PostTypes.FAKE_PARENT_DELETED) {
         return false;
     }
     const channel = getChannel(store.getState(), post.channel_id);
+
+    const config = getConfig(store.getState());
+    const currentUser = UserStore.getCurrentUser();
+    
+    if(hasSystemAdminPermission(currentUser) == false && config.RestrictPostDelete==Constants.PERMISSIONS_SYSTEM_ADMIN){
+        return false;
+    }
+
 
     if (channel && channel.delete_at !== 0) {
         return false;
@@ -71,7 +95,7 @@ export function canEditPost(post, editDisableAction) {
     }
 
     let canEdit = false;
-    const license = getLicense(store.getState());
+    const license = true; // getLicense(store.getState());
     const config = getConfig(store.getState());
     const channel = getChannel(store.getState(), post.channel_id);
 
